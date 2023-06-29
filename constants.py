@@ -1,0 +1,20 @@
+import logging
+
+LOGGING_LEVEL = logging.INFO
+
+BLOCK_INTERVAL = 60  # в минутах
+AVAILABLE_MESSAGES_COUNT = 20
+COUNT_COMPLAINT_FOR_BAN = 3
+BAN_LIFETIME = 4 * 60  # в минутах
+START_MESSAGES_COUNT = 20
+TIME_OF_LIFE_DELIVERED_MESSAGES = 60  # в минутах
+
+LINE_BREAK = b"\n"
+
+GENERAL_CHANNEL = "general"
+
+
+class DestinationTypes:
+    CHANNEL = 2
+    PRIVATE = 3
+
