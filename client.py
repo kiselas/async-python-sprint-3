@@ -2,7 +2,7 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import List, Tuple, Any
+from typing import List, Tuple, Any, Optional
 
 from constants import DestinationTypes, GENERAL_CHANNEL
 from services import ServerCommands
@@ -19,15 +19,15 @@ def raise_graceful_exit():
 
 
 class ChatClientProtocol(asyncio.Protocol):
-    def __init__(self, on_con_lost, on_name_chosen):
-        self.on_con_lost = on_con_lost
-        self.on_name_chosen = on_name_chosen
-        self.own_name = None
-        self.transport = None
+    def __init__(self, on_con_lost: asyncio.Future, on_name_chosen: asyncio.Future, ) -> None:
+        self.on_con_lost: asyncio.Future = on_con_lost
+        self.on_name_chosen: asyncio.Future = on_name_chosen
+        self.own_name: Optional[str] = None
+        self.transport: Optional[asyncio.Transport] = None
 
         # Для начала соединяемся с общим каналом
-        self.current_connection_type = DestinationTypes.CHANNEL
-        self.current_connection_name = GENERAL_CHANNEL
+        self.current_connection_type: int = DestinationTypes.CHANNEL
+        self.current_connection_name: str = GENERAL_CHANNEL
 
     def get_statistics(self, json_data: dict) -> List[Tuple[str, Any]]:
         statistic: List[Tuple[str, Any]] = [
@@ -197,12 +197,15 @@ class Client:
 
 
 if __name__ == "__main__":
-    server_host = input("Enter server host. Leave it blank for the default value (127.0.0.1): ") or "127.0.0.1"
-    server_port = input("Enter server port. Leave it blank for the default value (8000): ") or 8000
-    server_port = int(server_port)
+    try:
+        server_host = input("Enter server host. Leave it blank for the default value (127.0.0.1): ") or "127.0.0.1"
+        server_port = input("Enter server port. Leave it blank for the default value (8000): ") or 8000
+        server_port = int(server_port)
 
-    print(f"Try to connect to {server_host}:{server_port}")
+        print(f"Try to connect to {server_host}:{server_port}")
 
-    server = Client(server_host=server_host, server_port=server_port)
+        server = Client(server_host=server_host, server_port=server_port)
 
-    server.connect()
+        server.connect()
+    except KeyboardInterrupt:
+        print("Got exit signal. Buy!")

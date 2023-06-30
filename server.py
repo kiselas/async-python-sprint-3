@@ -26,9 +26,7 @@ class ChatServerProtocol(asyncio.Protocol):
         usr_names_lst = CONNECTION_POOL.get_all_user_names()
         channels_names_lst = CONNECTION_POOL.get_all_channel_names()
 
-        srv_stat = {}
-        srv_stat["users"] = usr_names_lst
-        srv_stat["channels"] = channels_names_lst
+        srv_stat = {"users": usr_names_lst, "channels": channels_names_lst}
 
         srv_stat_str = json.dumps(srv_stat, ensure_ascii=False)
         message = f"{ServerCommands.SET_STATISTIC.value} {srv_stat_str}"
